@@ -1,0 +1,5 @@
+Задача: 3_2.Сортировка почти упорядоченной последовательности
+https://contest.yandex.ru/contest/14768/run-report/23831904/
+
+Задача: 4.Порядковая статистика
+https://contest.yandex.ru/contest/14768/run-report/23843201/
