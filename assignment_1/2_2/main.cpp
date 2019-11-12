@@ -1,4 +1,4 @@
-﻿/*
+/*
 2_2.Старый компьютер
 
 Для сложения чисел используется старый компьютер.
@@ -23,16 +23,18 @@
 class MinHeap {
 public:
 	MinHeap();
-	void Add(int node);
-	void SiftUp(int node);
-	void SiftDown(int node);
-	int getParent(int node);
-	int getLeftChild(int node);
-	int getRightChild(int node);
+	MinHeap(std::vector<int>& data);
+	void add(int node);
 	int getMin();
-	int size();
+	int size() const;
 
 private:
+	void siftUp(int node);
+	void siftDown(int node);
+	static int getParent(int node);
+	static int getLeftChild(int node);
+	static int getRightChild(int node);
+
 	std::vector<int> heap;
 };
 
@@ -40,22 +42,28 @@ MinHeap::MinHeap() {
 	heap.resize(0);
 }
 
-void MinHeap::Add(int node) {
-	heap.push_back(node);
-	SiftUp(size() - 1);
+MinHeap::MinHeap(std::vector<int>& data) : heap(data) {
+	for (int i = data.size() / 2 - 1; i >= 0; i--) {
+		siftDown(i);
+	}
 }
 
-void MinHeap::SiftUp(int node) {
+void MinHeap::add(int node) {
+	heap.push_back(node);
+	siftUp(size() - 1);
+}
+
+void MinHeap::siftUp(int node) {
 	if (node) {
 		int parent = getParent(node);
 		if (heap[parent] > heap[node]) {
 			std::swap(heap[node], heap[parent]);
-			SiftUp(parent);
+			siftUp(parent);
 		}
 	}
 }
 
-void MinHeap::SiftDown(int node) {
+void MinHeap::siftDown(int node) {
 	int left = getLeftChild(node);
 	int right = getRightChild(node);
 	int min = node;
@@ -68,7 +76,7 @@ void MinHeap::SiftDown(int node) {
 	if (min != node)
 	{
 		std::swap(heap[node], heap[min]);
-		SiftDown(min);
+		siftDown(min);
 	}
 }
 
@@ -93,11 +101,11 @@ int MinHeap::getMin() {
 	int result = heap[0];
 	std::swap(heap[0], heap[size() - 1]);
 	heap.pop_back();
-	SiftDown(0);
+	siftDown(0);
 	return result;
 }
 
-int MinHeap::size() {
+int MinHeap::size() const {
 	return heap.size();
 }
 
@@ -112,7 +120,7 @@ int solve(MinHeap& heap) {
 			if (heap.size()) {
 				min += heap.getMin();
 				result += min;
-				heap.Add(min);
+				heap.add(min);
 			}
 		}
 	}
@@ -126,12 +134,12 @@ int main() {
 	int numbers_count = 0;
 	std::cin >> numbers_count;;
 
-	int number;
-	MinHeap heap;
+	std::vector<int> numbers(numbers_count, 0);
 	for (int i = 0; i < numbers_count; i++) {
-		std::cin >> number;
-		heap.Add(number);
+		std::cin >> numbers[i];
 	}
+
+	MinHeap heap(numbers);
 
 	std::cout << solve(heap) << std::endl;
 
