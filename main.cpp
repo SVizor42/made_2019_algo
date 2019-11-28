@@ -1,4 +1,4 @@
-﻿/*
+/*
 6_1. Обход дерева в порядке pre-order
 Дано число N < 106 и последовательность целых чисел из [-231..231] длиной N. Требуется построить бинарное дерево, заданное наивным порядком вставки. Т.е., при добавлении очередного числа K в дерево с корнем root, если root→Key ≤ K, то узел K добавляется в правое поддерево root; иначе в левое поддерево root. Выведите элементы в порядке pre-order (сверху вниз).
 
@@ -8,47 +8,42 @@
 
 #include <iostream>
 #include <stack>
-
-// Узел бинарного дерева
-struct treeNode {
-    explicit treeNode(int value) : value_(value) {}
-    ~treeNode();
-    
-    int value_ = 0;
-    treeNode* left = nullptr;
-    treeNode* right = nullptr;
-};
+#include <functional>
 
 class Tree {
 public:
+// Узел бинарного дерева
+    struct treeNode {
+        explicit treeNode(int value) : value_(value) {}
+    
+        int value_ = 0;
+        treeNode* left = nullptr;
+        treeNode* right = nullptr;
+    };
+    
+    using function = std::function<void(treeNode*)>;
+
+    Tree() : root(nullptr) {};
     ~Tree();
-    void print() const;
-    void add(int value);
+    Tree(const Tree&) = delete;
+    Tree(Tree&&) = delete;
+    Tree& operator=(const Tree&) = delete;
+    Tree& operator=(Tree&&) = delete;
+    void PreOrder(const function& func) const;
+    void Add(int value);
 
 private:
     treeNode* root = nullptr;
+    
 };
 
-treeNode::~treeNode() {
-    if (this->left) {
-        delete this->left;
-        this->left = nullptr;
-    }
-    if (this->right) {
-        delete this->right;
-        this->right = nullptr;
-    }
-}
-
 Tree::~Tree() {
-    if (!root) {
-        return;
-    }
-    
-    delete root;
+    PreOrder([](treeNode* node) {
+        delete node;
+    });
 }
 
-void Tree::add(int value) {
+void Tree::Add(int value) {
     if (!root) {
         root = new treeNode(value);
         return;
@@ -77,7 +72,7 @@ void Tree::add(int value) {
     }
 }
 
-void Tree::print() const {
+void Tree::PreOrder(const function& func) const {
     if (!root) {
         return;
     }
@@ -88,7 +83,6 @@ void Tree::print() const {
     while (!nodes.empty()) {
         treeNode* node = nodes.top();
         nodes.pop();
-        std::cout << node->value_ << " ";
         
         if (node->right) {
             nodes.push(node->right);
@@ -96,6 +90,8 @@ void Tree::print() const {
         if (node->left) {
             nodes.push(node->left);
         }
+        
+        func(node);
     }
 }
 
@@ -107,11 +103,12 @@ int main() {
     int node = 0;
     for (int i = 0; i < nodes_count; i++) {
         std::cin >> node;
-        tree.add(node);
+        tree.Add(node);
     }    
     
-    tree.print();
+    tree.PreOrder([](Tree::treeNode* node) {
+        std::cout << node->value_ << " ";
+    });
     
     return 0;
 }
-
