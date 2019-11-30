@@ -66,9 +66,15 @@ TreapNode* merge(TreapNode* left, TreapNode* right) {
 
 class Treap {
 public:
+    Treap() : root(nullptr) {};
+    Treap(const Treap&) = delete;
+    Treap(Treap&&) = delete;
+    Treap& operator=(const Treap&) = delete;
+    Treap& operator=(Treap&&) = delete;
+    ~Treap();
+    
     int insert(int key);
     void erase(int value);
-    ~Treap();
 private:
     TreapNode* root = nullptr;
 
