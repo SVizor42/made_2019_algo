@@ -6,9 +6,9 @@ A.Алгоритм сжатия данных Хаффмана
 
 */
 
-#include "Huffman.h"
 #include <unordered_map>
 #include <queue>
+#include "Huffman.h"
 
 using uchar = unsigned char;
 
