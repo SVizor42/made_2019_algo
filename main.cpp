@@ -76,17 +76,30 @@ bool HashTable<T, THash>::Add(const T& key) {
 
     THash hash_func;
     size_t hash = hash_func(key, table.size()), iter = 0;
-    while (table[hash] != empty && table[hash] != deleted) {
-        if (table[hash] == key)
+    while (iter < table.size()) {
+        
+        if (table[hash] == empty) {
+            table[hash] = key;
+            table_size++;      
+            return true;
+        }
+        
+        if (table[hash] == key) {
             return false;
+        }
+        else {
+            if (table[hash] == deleted) {
+                table[hash] = key;
+                table_size++;      
+                return true;               
+            }
+        }
             
         iter++;
         hash = (hash + iter + 1) % table.size();
     }
     
-    table[hash] = key;
-    table_size++;
-    return true;
+    return false;
 }
 
 template <class T, class THash>
