@@ -71,32 +71,37 @@ template <class T, class THash>
 bool HashTable<T, THash>::Add(const T& key) {
     assert(key != empty);
     
+    if (key == deleted)
+        return false;
+    
     if (4 * table_size >= 3 * table.size())
         Rehash();
 
     THash hash_func;
     size_t hash = hash_func(key, table.size()), iter = 0;
+    int index = -1;
     while (iter < table.size()) {
-        
+
         if (table[hash] == empty) {
             table[hash] = key;
             table_size++;      
             return true;
         }
         
-        if (table[hash] == key) {
+        if (table[hash] == key)
             return false;
-        }
-        else {
-            if (table[hash] == deleted) {
-                table[hash] = key;
-                table_size++;      
-                return true;               
-            }
-        }
+            
+        if (table[hash] == deleted && index < 0)
+            index = hash;
             
         iter++;
         hash = (hash + iter + 1) % table.size();
+    }
+    
+    if (index >= 0) {
+        table[hash] = key;
+        table_size++;      
+        return true;            
     }
     
     return false;
@@ -105,6 +110,9 @@ bool HashTable<T, THash>::Add(const T& key) {
 template <class T, class THash>
 bool HashTable<T, THash>::Remove(const T& key) {
     assert(key != empty);
+    
+    if (key == deleted)
+        return false;
 
     THash hash_func;
     size_t hash = hash_func(key, table.size()), iter = 0;
