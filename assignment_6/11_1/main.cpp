@@ -12,7 +12,9 @@
 #include <vector>
 #include <cmath>
 
-int get_min_cycle(const std::vector< std::vector<size_t> >& graph) {
+using Graph = std::vector< std::vector<size_t> >;
+
+int get_min_cycle(const Graph& graph) {
     size_t min_cycle = 0;
     for (size_t i = 0; i < graph.size(); i++) {
         
@@ -25,7 +27,7 @@ int get_min_cycle(const std::vector< std::vector<size_t> >& graph) {
         vertex_queue.push(i);
         color[i] = 1;
         
-        bool flag = 0;
+        bool cycle_found = false;
         while (!vertex_queue.empty()) {
             size_t parent = vertex_queue.front();
             vertex_queue.pop();
@@ -35,7 +37,7 @@ int get_min_cycle(const std::vector< std::vector<size_t> >& graph) {
                 
                 if (color[child]) {
                     cycle = dist[parent] + dist[child] + 1;
-                    flag = 1;
+                    cycle_found = true;
                     break;
                 }
                 
@@ -44,7 +46,7 @@ int get_min_cycle(const std::vector< std::vector<size_t> >& graph) {
                 dist[child] = dist[parent] + 1;
                 parents[child] = parent;
             }
-            if (flag) 
+            if (cycle_found) 
                 break;
         }
 
@@ -64,7 +66,7 @@ int main() {
     // number of vertices & edges
     size_t v = 0, n = 0;
     std::cin >> v >> n;
-    std::vector< std::vector<size_t> > graph(v);
+    Graph graph(v);
     size_t from = 0, to = 0;
     for (size_t i = 0; i < n; i++) {
         std::cin >> from >> to;
