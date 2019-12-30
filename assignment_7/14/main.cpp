@@ -20,7 +20,7 @@ const int MAX_WEIGHT = 1000000;
 
 using Graph = std::vector< std::vector< std::pair<size_t, size_t> > >;
 
-size_t MST_solver(Graph& graph) {
+size_t MST_solver(const Graph& graph) {
 	std::vector<bool> used(graph.size(), false);
 	std::vector<int> min_weight(graph.size(), MAX_WEIGHT);
 	min_weight[0] = 0;
